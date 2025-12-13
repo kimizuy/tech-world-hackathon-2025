@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { findDepartmentById } from "../../../guide/departments";
+import { findDepartmentById } from "../../../reception/departments";
 
 type VerificationStep = "card" | "face" | "verifying" | "success" | "failed";
 
@@ -392,7 +392,7 @@ export default function VerifyPage() {
                   onClick={() => {
                     // TODO: Issue ticket number and navigate
                     alert("番号札を発行しました: A-001");
-                    router.push(`/office/department/${id}`);
+                    router.push(`/user/department/${id}`);
                   }}
                   className="w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg"
                 >
@@ -443,7 +443,7 @@ export default function VerifyPage() {
                   もう一度試す
                 </button>
                 <Link
-                  href="/office/guide"
+                  href="/user/reception"
                   className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
                 >
                   有人窓口に相談する
@@ -460,7 +460,7 @@ export default function VerifyPage() {
         {(step === "card" || step === "face") && (
           <div className="mt-6">
             <Link
-              href={`/office/department/${id}`}
+              href={`/user/department/${id}`}
               className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
             >
               戻る

@@ -37,7 +37,7 @@ declare global {
   }
 }
 
-export default function OfficeGuidePage() {
+export default function ReceptionPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isListening, setIsListening] = useState(false);
@@ -294,9 +294,7 @@ export default function OfficeGuidePage() {
                 </button>
                 <button
                   onClick={() =>
-                    router.push(
-                      `/office/department/${recommendedDepartment.id}`,
-                    )
+                    router.push(`/user/department/${recommendedDepartment.id}`)
                   }
                   className="flex-1 rounded-lg bg-emerald-600 px-4 py-3 font-bold text-white transition-colors hover:bg-emerald-500"
                 >
@@ -381,10 +379,10 @@ export default function OfficeGuidePage() {
             会話をリセット
           </button>
           <Link
-            href="/office"
+            href="/user"
             className="px-4 py-2 rounded-lg border border-slate-600 hover:border-slate-400 text-sm"
           >
-            職員ページへ
+            戻る
           </Link>
         </div>
       </div>

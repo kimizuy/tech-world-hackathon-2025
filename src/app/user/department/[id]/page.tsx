@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { departments, findDepartmentById } from "../../guide/departments";
+import { departments, findDepartmentById } from "../../reception/departments";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -63,13 +63,13 @@ export default async function DepartmentPage({ params }: PageProps) {
         {/* Actions */}
         <section className="space-y-3">
           <Link
-            href={`/office/department/${id}/verify`}
+            href={`/user/department/${id}/verify`}
             className="block w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg text-center"
           >
             番号札を発行する
           </Link>
           <Link
-            href="/office/guide"
+            href="/user/reception"
             className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
           >
             案内に戻る
