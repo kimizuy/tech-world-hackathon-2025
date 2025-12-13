@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SubscriptionForm } from "@/app/components/subscription-form";
+import { SubscriptionForm } from "@/app/_components/subscription-form";
 
 const PAYJP_SCRIPT_SRC = "https://js.pay.jp/v2/pay.js";
 
