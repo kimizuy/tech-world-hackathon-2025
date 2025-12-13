@@ -11,6 +11,7 @@ interface SubscriptionResult {
   customerId: string;
   subscriptionId: string;
   status: string;
+  currentPeriodEnd?: number;
 }
 
 interface PayjpCardElement {
