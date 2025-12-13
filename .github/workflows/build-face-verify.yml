@@ -30,6 +30,7 @@ jobs:
         with:
           context: ./face-verify
           file: ./face-verify/Dockerfile.sakura
+          platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/face-verify:latest
           cache-from: type=gha
