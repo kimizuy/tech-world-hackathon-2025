@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { departments } from "@/app/gov/guide/departments";
+import { departments } from "@/app/office/guide/departments";
 
 const SAKURA_API_URL = "https://api.ai.sakura.ad.jp/v1/chat/completions";
 const MODEL = "gpt-oss-120b";

@@ -10,7 +10,7 @@ export default function UserPage() {
         </p>
         <div className="flex flex-wrap gap-4">
           <Link
-            href="/guide"
+            href="/user/guide"
             className="rounded-lg bg-blue-600 px-4 py-2 font-medium hover:bg-blue-500"
           >
             案内ページへ

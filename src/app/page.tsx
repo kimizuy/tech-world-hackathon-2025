@@ -75,13 +75,13 @@ export default function HomePage() {
             href="/user"
             className="block w-full rounded-lg bg-zinc-800 py-2 text-center font-medium text-white hover:bg-zinc-700"
           >
-            ユーザー向けページへ
+            市民の方へ
           </Link>
           <Link
-            href="/gov"
+            href="/office"
             className="block w-full rounded-lg bg-zinc-800 py-2 text-center font-medium text-white hover:bg-zinc-700"
           >
-            行政管理者向けページへ
+            職員の方へ
           </Link>
           <Link
             href="/pricing"

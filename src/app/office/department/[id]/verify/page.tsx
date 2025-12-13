@@ -392,7 +392,7 @@ export default function VerifyPage() {
                   onClick={() => {
                     // TODO: Issue ticket number and navigate
                     alert("番号札を発行しました: A-001");
-                    router.push(`/gov/department/${id}`);
+                    router.push(`/office/department/${id}`);
                   }}
                   className="w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg"
                 >
@@ -443,7 +443,7 @@ export default function VerifyPage() {
                   もう一度試す
                 </button>
                 <Link
-                  href="/gov/guide"
+                  href="/office/guide"
                   className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
                 >
                   有人窓口に相談する
@@ -460,7 +460,7 @@ export default function VerifyPage() {
         {(step === "card" || step === "face") && (
           <div className="mt-6">
             <Link
-              href={`/gov/department/${id}`}
+              href={`/office/department/${id}`}
               className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
             >
               戻る
