@@ -1,0 +1,36 @@
+# Local development (CPU mode)
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies and build tools
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies (CPU version)
+RUN pip install --no-cache-dir \
+    insightface \
+    onnxruntime \
+    opencv-python-headless \
+    numpy \
+    fastapi \
+    "uvicorn[standard]" \
+    python-multipart
+
+WORKDIR /app
+COPY server.py /app/
+
+# Pre-download face analysis model
+RUN python -c "from insightface.app import FaceAnalysis; app = FaceAnalysis(name='buffalo_l'); app.prepare(ctx_id=-1, det_size=(640, 640))"
+
+EXPOSE 8000
+
+# CPU mode
+ENV USE_GPU=false
+CMD ["python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

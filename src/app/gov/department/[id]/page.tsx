@@ -62,9 +62,12 @@ export default async function DepartmentPage({ params }: PageProps) {
 
         {/* Actions */}
         <section className="space-y-3">
-          <button className="w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg">
+          <Link
+            href={`/gov/department/${id}/verify`}
+            className="block w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg text-center"
+          >
             番号札を発行する
-          </button>
+          </Link>
           <Link
             href="/gov/guide"
             className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"

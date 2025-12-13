@@ -1,0 +1,37 @@
+# Sakura Cloud Koukaryoku DOK (GPU mode)
+FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies (GPU version)
+RUN pip3 install --no-cache-dir \
+    insightface \
+    onnxruntime-gpu \
+    opencv-python-headless \
+    numpy \
+    fastapi \
+    "uvicorn[standard]" \
+    python-multipart
+
+WORKDIR /app
+COPY server.py /app/
+
+# Pre-download face analysis model
+RUN python3 -c "from insightface.app import FaceAnalysis; app = FaceAnalysis(name='buffalo_l'); app.prepare(ctx_id=-1, det_size=(640, 640))"
+
+EXPOSE 8000
+
+# GPU mode
+ENV USE_GPU=true
+CMD ["python3", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
