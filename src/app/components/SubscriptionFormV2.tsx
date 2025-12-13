@@ -166,11 +166,11 @@ export default function SubscriptionFormV2({
         selectedPlan,
       );
 
-      if (result.success) {
+      if (result.success && result.data) {
         setResult(result.data);
         console.log("✅ サブスクリプション登録成功！", result.data);
       } else {
-        setError(result.error);
+        setError(result.error || "登録に失敗しました");
       }
     } catch (err) {
       console.error("エラー:", err);
