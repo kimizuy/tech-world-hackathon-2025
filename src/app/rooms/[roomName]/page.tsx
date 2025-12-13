@@ -28,7 +28,7 @@ export default function RoomPage() {
     const fetchToken = async () => {
       try {
         const response = await fetch(
-          `/api/token?room=${encodeURIComponent(roomName)}&username=${encodeURIComponent(username)}`
+          `/api/token?room=${encodeURIComponent(roomName)}&username=${encodeURIComponent(username)}`,
         );
 
         if (!response.ok) {

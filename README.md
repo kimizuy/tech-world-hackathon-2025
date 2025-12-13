@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tech World Hackathon 2025
+
+Next.js 16 + LiveKit + Drizzle ORM + TiDB を使用したプロジェクト。
+
+## Tech Stack
+
+- **Framework**: Next.js 16
+- **Database**: TiDB (さくらのクラウド エンハンスドDB)
+- **ORM**: Drizzle ORM
+- **Video**: LiveKit
+- **Styling**: Tailwind CSS
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Set up environment variables
+
+Copy `.env.example` to `.env.local` and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+- `LIVEKIT_API_KEY` - LiveKit API key
+- `LIVEKIT_API_SECRET` - LiveKit API secret
+- `NEXT_PUBLIC_LIVEKIT_URL` - LiveKit server URL
+- `DATABASE_URL` - TiDB connection string
+
+### 3. Push database schema
+
+```bash
+npm run db:push
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script        | Description                  |
+| ------------- | ---------------------------- |
+| `dev`         | Start development server     |
+| `build`       | Build for production         |
+| `start`       | Start production server      |
+| `lint`        | Run ESLint                   |
+| `format`      | Format code with Prettier    |
+| `db:generate` | Generate database migrations |
+| `db:migrate`  | Run database migrations      |
+| `db:push`     | Push schema to database      |
+| `db:studio`   | Open Drizzle Studio          |
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+- `/` - Home page
+- `/demo` - Drizzle + TiDB demo (messages)
+- `/rooms/[roomName]` - LiveKit video room
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /api/health` - Database health check
+- `GET /api/messages` - Get all messages
+- `POST /api/messages` - Create a message
+- `GET /api/token` - Get LiveKit token
