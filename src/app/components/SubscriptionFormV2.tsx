@@ -33,20 +33,26 @@ const PLANS = [
   {
     id: "starter_plan",
     name: "スタンダードプラン",
-    price: 150000,
+    pricePerUser: 3000,
     description: "利用職員数：～50名",
+    minUsers: 1,
+    maxUsers: 50,
   },
   {
     id: "basic_plan",
     name: "スタンダードプラスプラン",
-    price: 400000,
+    pricePerUser: 2500,
     description: "利用職員数：51～200名",
+    minUsers: 51,
+    maxUsers: 200,
   },
   {
     id: "pro_plan",
     name: "プレミアムプラン",
-    price: 800000,
+    pricePerUser: 2000,
     description: "利用職員数：201～500名",
+    minUsers: 201,
+    maxUsers: 500,
     note: "※500名超は別途お見積",
   },
 ];
@@ -59,6 +65,7 @@ export default function SubscriptionFormV2({
   const [error, setError] = useState<string>("");
   const [payjpReady, setPayjpReady] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("basic_plan");
+  const [userCount, setUserCount] = useState<number>(51);
   const cardElementRef = useRef<PayjpCardElement | null>(null);
   const payjpRef = useRef<PayjpInstance | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -106,6 +113,14 @@ export default function SubscriptionFormV2({
       cardElementRef.current.update({ disabled: true });
     }
   }, [result]);
+
+  // プラン変更時にデフォルトの人数を設定
+  useEffect(() => {
+    const plan = PLANS.find((p) => p.id === selectedPlan);
+    if (plan) {
+      setUserCount(plan.minUsers);
+    }
+  }, [selectedPlan]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,17 +180,20 @@ export default function SubscriptionFormV2({
   };
 
   const selectedPlanInfo = PLANS.find((p) => p.id === selectedPlan);
+  const totalPrice = selectedPlanInfo
+    ? selectedPlanInfo.pricePerUser * userCount
+    : 0;
 
   return (
     <div className="max-w-5xl mx-auto">
       {/* プラン選択 */}
-      <div className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
               onClick={() => !result && setSelectedPlan(plan.id)}
-              className={`relative rounded-lg border-2 p-4 transition-all ${
+              className={`relative rounded-lg border-2 p-5 transition-all min-h-[180px] flex items-center ${
                 result ? "cursor-not-allowed opacity-50" : "cursor-pointer"
               } ${
                 selectedPlan === plan.id
@@ -183,16 +201,16 @@ export default function SubscriptionFormV2({
                   : "border-gray-300 bg-white hover:border-blue-400 hover:shadow-md"
               }`}
             >
-              <div className="text-center">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">
+              <div className="text-center w-full">
+                <h3 className="text-lg font-bold text-gray-800 mb-2">
                   {plan.name}
                 </h3>
-                <p className="text-xs text-gray-600 mb-3">{plan.description}</p>
+                <p className="text-sm text-gray-600 mb-3">{plan.description}</p>
                 <div className="mb-3">
-                  <span className="text-2xl font-bold text-gray-900">
-                    ¥{plan.price.toLocaleString()}
+                  <span className="text-3xl font-bold text-gray-900">
+                    ¥{plan.pricePerUser.toLocaleString()}
                   </span>
-                  <span className="text-sm text-gray-600">/月</span>
+                  <span className="text-base text-gray-600">/人・月</span>
                 </div>
                 {"note" in plan && (
                   <p className="text-xs text-gray-600 mt-2">{plan.note}</p>
@@ -204,13 +222,19 @@ export default function SubscriptionFormV2({
       </div>
 
       {/* 支払い情報入力 */}
-      <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-1 text-gray-800">お支払い情報</h2>
-        <p className="text-xs text-gray-600 mb-4">
+      <div className="max-w-md mx-auto p-5 bg-white rounded-lg shadow-lg">
+        <h2 className="text-xl font-bold mb-2 text-gray-800">お支払い情報</h2>
+        <p className="text-sm text-gray-600 mb-1">
           <span className="font-bold text-blue-600">
             {selectedPlanInfo?.name}
           </span>
-          （¥{selectedPlanInfo?.price.toLocaleString()}/月・7日間無料）
+          （¥{selectedPlanInfo?.pricePerUser.toLocaleString()}/人・月）
+        </p>
+        <p className="text-lg font-bold text-gray-900 mb-5">
+          合計: ¥{totalPrice.toLocaleString()}/月
+          <span className="text-xs font-normal text-gray-600 ml-2">
+            （7日間無料トライアル）
+          </span>
         </p>
 
         {error && (
@@ -232,9 +256,34 @@ export default function SubscriptionFormV2({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              利用職員数
+            </label>
+            <input
+              type="number"
+              value={userCount}
+              onChange={(e) => setUserCount(Number(e.target.value))}
+              min={selectedPlanInfo?.minUsers}
+              max={selectedPlanInfo?.maxUsers}
+              required
+              disabled={!!result}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              placeholder={`${selectedPlanInfo?.minUsers}～${selectedPlanInfo?.maxUsers}名`}
+            />
+            {selectedPlanInfo &&
+              (userCount < selectedPlanInfo.minUsers ||
+                userCount > selectedPlanInfo.maxUsers) && (
+                <p className="text-xs text-red-600 mt-1">
+                  {selectedPlanInfo.minUsers}名～{selectedPlanInfo.maxUsers}
+                  名の範囲で入力してください
+                </p>
+              )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               メールアドレス
             </label>
             <input
@@ -248,7 +297,7 @@ export default function SubscriptionFormV2({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               カード情報
             </label>
             <div
@@ -262,8 +311,15 @@ export default function SubscriptionFormV2({
 
           <button
             type="submit"
-            disabled={loading || !payjpReady || !!result}
-            className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors text-sm"
+            disabled={
+              loading ||
+              !payjpReady ||
+              !!result ||
+              !selectedPlanInfo ||
+              userCount < selectedPlanInfo.minUsers ||
+              userCount > selectedPlanInfo.maxUsers
+            }
+            className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors text-sm mt-5"
           >
             {result
               ? "登録済み"
@@ -271,7 +327,7 @@ export default function SubscriptionFormV2({
                 ? "読み込み中..."
                 : loading
                   ? "処理中..."
-                  : `登録する（¥${selectedPlanInfo?.price.toLocaleString()}/月）`}
+                  : `登録する（¥${totalPrice.toLocaleString()}/月）`}
           </button>
         </form>
       </div>
