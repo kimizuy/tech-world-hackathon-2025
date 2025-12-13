@@ -11,7 +11,7 @@ export async function GET() {
   try {
     // Simple query to verify database connection (MySQL/TiDB compatible)
     const [rows] = await pool.query<VersionRow[]>(
-      "SELECT NOW() as current_time, VERSION() as version"
+      "SELECT NOW() as `current_time`, VERSION() as `version`"
     );
     const row = rows[0];
 
