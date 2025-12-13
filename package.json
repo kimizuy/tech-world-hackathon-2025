@@ -17,11 +17,13 @@
   "dependencies": {
     "@livekit/components-react": "^2.9.17",
     "@livekit/components-styles": "^1.2.0",
+    "delayed-stream": "^1.0.0",
     "drizzle-orm": "^0.45.1",
     "livekit-client": "^2.16.1",
     "livekit-server-sdk": "^2.15.0",
     "mysql2": "^3.15.3",
     "next": "16.0.10",
+    "payjp": "^2.3.0",
     "react": "19.2.1",
     "react-dom": "19.2.1"
   },
