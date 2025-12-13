@@ -17,6 +17,22 @@ Next.js 16 App Router drives everything under `src/app`. Feature folders like `r
 
 TypeScript is strict, so annotate props, server actions, and DB helpers explicitly. Stick to function components, Tailwind utility classes in JSX, 2-space Prettier formatting, and double quotes. Folder and route names stay lowercase with dashes, components use PascalCase, and helpers stay camelCase. Prefer `@/` imports over relative traversals and let ESLint flag unsafe patterns.
 
+### File Naming
+
+Use snake_case for all file names (e.g., `subscription_form.tsx`, `create_token.ts`). Exceptions are Next.js conventions like `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, and `route.ts`.
+
+### Export Style
+
+Use named exports instead of default exports. This improves refactoring, auto-imports, and prevents naming inconsistencies.
+
+```tsx
+// Good
+export function SubscriptionForm() { ... }
+
+// Avoid
+export default function SubscriptionForm() { ... }
+```
+
 ## Testing Guidelines
 
 Automated tests are not configured yet; every PR must describe manual checks (cover `/rooms/[roomName]`, `/demo`, and `/api/health` at minimum). When adding tests, place `*.test.ts[x]` files alongside the feature, lean on React Testing Library or Playwright, and mock Drizzle + LiveKit calls so CI can run without secrets. Always run `npm run lint` and `npm run build` before pushing to satisfy Lefthook.
