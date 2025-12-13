@@ -13,6 +13,22 @@ interface SubscriptionResult {
   status: string;
 }
 
+interface PayjpCardElement {
+  update: (options: { disabled: boolean }) => void;
+}
+
+interface PayjpInstance {
+  createToken: (element: unknown) => Promise<{
+    id: string;
+    error?: {
+      type: string;
+      code: string;
+      message: string;
+      param: string;
+    };
+  }>;
+}
+
 const PLANS = [
   {
     id: "starter_plan",
@@ -43,8 +59,8 @@ export default function SubscriptionFormV2({
   const [error, setError] = useState<string>("");
   const [payjpReady, setPayjpReady] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("basic_plan");
-  const cardElementRef = useRef<unknown>(null);
-  const payjpRef = useRef<unknown>(null);
+  const cardElementRef = useRef<PayjpCardElement | null>(null);
+  const payjpRef = useRef<PayjpInstance | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
