@@ -9,14 +9,14 @@ export async function GET(request: NextRequest) {
   if (!room) {
     return NextResponse.json(
       { error: 'Missing "room" query parameter' },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!username) {
     return NextResponse.json(
       { error: 'Missing "username" query parameter' },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   if (!apiKey || !apiSecret) {
     return NextResponse.json(
       { error: "Server misconfigured" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

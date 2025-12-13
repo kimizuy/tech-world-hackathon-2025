@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TECH WORLD Hackathon 2025",
-  description: "TECH WORLD Hackathon 2025 - Video call application with LiveKit and Next.js",
+  description:
+    "TECH WORLD Hackathon 2025 - Video call application with LiveKit and Next.js",
 };
 
 export default function RootLayout({
