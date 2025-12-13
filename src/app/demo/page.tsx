@@ -15,14 +15,19 @@ export default function DemoPage() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchMessages = async () => {
-    const res = await fetch("/api/messages");
-    const data = await res.json();
-    setMessages(data);
-  };
-
   useEffect(() => {
-    fetchMessages();
+    const controller = new AbortController();
+
+    fetch("/api/messages", { signal: controller.signal })
+      .then((res) => res.json())
+      .then((data) => setMessages(data))
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Failed to fetch messages:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,14 +35,20 @@ export default function DemoPage() {
     if (!username || !content) return;
 
     setLoading(true);
-    await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, content }),
-    });
-    setContent("");
-    await fetchMessages();
-    setLoading(false);
+    try {
+      await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, content }),
+      });
+      setContent("");
+
+      const res = await fetch("/api/messages");
+      const data = await res.json();
+      setMessages(data);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
