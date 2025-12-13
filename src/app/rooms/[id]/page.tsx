@@ -13,7 +13,7 @@ export default function RoomPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const roomName = params.roomName as string;
+  const roomName = params.id as string;
   const username = searchParams.get("username");
 
   const [token, setToken] = useState<string>("");

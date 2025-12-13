@@ -37,7 +37,7 @@ declare global {
   }
 }
 
-export default function GovGuidePage() {
+export default function ReceptionPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isListening, setIsListening] = useState(false);
@@ -294,7 +294,7 @@ export default function GovGuidePage() {
                 </button>
                 <button
                   onClick={() =>
-                    router.push(`/gov/department/${recommendedDepartment.id}`)
+                    router.push(`/user/department/${recommendedDepartment.id}`)
                   }
                   className="flex-1 rounded-lg bg-emerald-600 px-4 py-3 font-bold text-white transition-colors hover:bg-emerald-500"
                 >
@@ -379,10 +379,10 @@ export default function GovGuidePage() {
             会話をリセット
           </button>
           <Link
-            href="/gov"
+            href="/user"
             className="px-4 py-2 rounded-lg border border-slate-600 hover:border-slate-400 text-sm"
           >
-            管理者ページへ
+            戻る
           </Link>
         </div>
       </div>

@@ -3,9 +3,16 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { findDepartmentById } from "../../../guide/departments";
+import { findDepartmentById } from "../../../reception/departments";
+import { joinQueue } from "@/app/actions/queue";
 
-type VerificationStep = "card" | "face" | "verifying" | "success" | "failed";
+type VerificationStep =
+  | "card"
+  | "face"
+  | "verifying"
+  | "success"
+  | "failed"
+  | "queued";
 
 interface VerificationResult {
   is_match: boolean;
@@ -32,6 +39,8 @@ export default function VerifyPage() {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [ticketNumber, setTicketNumber] = useState<number | null>(null);
+  const [isJoiningQueue, setIsJoiningQueue] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -172,6 +181,19 @@ export default function VerifyPage() {
       );
       setStep("failed");
     }
+  };
+
+  // Join waiting queue
+  const handleJoinQueue = async () => {
+    setIsJoiningQueue(true);
+    const result = await joinQueue(id);
+    if (result.success && result.ticketNumber) {
+      setTicketNumber(result.ticketNumber);
+      setStep("queued");
+    } else {
+      setError(result.error ?? "待機キューへの登録に失敗しました");
+    }
+    setIsJoiningQueue(false);
   };
 
   // Retry verification
@@ -389,15 +411,43 @@ export default function VerifyPage() {
 
               <div className="space-y-3">
                 <button
-                  onClick={() => {
-                    // TODO: Issue ticket number and navigate
-                    alert("番号札を発行しました: A-001");
-                    router.push(`/gov/department/${id}`);
-                  }}
-                  className="w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 transition-colors text-lg"
+                  onClick={handleJoinQueue}
+                  disabled={isJoiningQueue}
+                  className="w-full rounded-lg bg-emerald-600 px-4 py-4 font-bold text-white hover:bg-emerald-500 disabled:bg-emerald-800 transition-colors text-lg"
                 >
-                  番号札を発行する
+                  {isJoiningQueue ? "登録中..." : "番号札を発行する"}
                 </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Step: Queued */}
+        {step === "queued" && ticketNumber && (
+          <section className="space-y-4">
+            <div className="p-8 bg-slate-800 rounded-lg text-center">
+              <p className="text-slate-400 text-sm mb-2">あなたの番号札</p>
+              <div className="w-32 h-32 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-5xl font-bold text-white">
+                  {ticketNumber}
+                </span>
+              </div>
+              <h2 className="text-xl font-bold mb-2 text-emerald-400">
+                待機中
+              </h2>
+              <p className="text-slate-400 text-sm mb-6">
+                職員が対応を開始するまでお待ちください。
+                <br />
+                対応が始まるとビデオ通話が開始されます。
+              </p>
+
+              <div className="space-y-3">
+                <Link
+                  href="/user"
+                  className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
+                >
+                  ホームに戻る
+                </Link>
               </div>
             </div>
           </section>
@@ -443,7 +493,7 @@ export default function VerifyPage() {
                   もう一度試す
                 </button>
                 <Link
-                  href="/gov/guide"
+                  href="/user/reception"
                   className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
                 >
                   有人窓口に相談する
@@ -460,7 +510,7 @@ export default function VerifyPage() {
         {(step === "card" || step === "face") && (
           <div className="mt-6">
             <Link
-              href={`/gov/department/${id}`}
+              href={`/user/department/${id}`}
               className="block w-full rounded-lg border border-slate-600 px-4 py-3 text-center hover:border-slate-400 transition-colors"
             >
               戻る
