@@ -338,6 +338,7 @@ export default function SubscriptionFormV2({
 
 declare global {
   interface Window {
-    Payjp: unknown;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Payjp: any;
   }
 }
