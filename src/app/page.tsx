@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -68,6 +69,27 @@ export default function HomePage() {
             Join Room
           </button>
         </form>
+
+        <div className="mt-10 space-y-3">
+          <Link
+            href="/user"
+            className="block w-full rounded-lg bg-zinc-800 py-2 text-center font-medium text-white hover:bg-zinc-700"
+          >
+            ユーザー向けページへ
+          </Link>
+          <Link
+            href="/gov"
+            className="block w-full rounded-lg bg-zinc-800 py-2 text-center font-medium text-white hover:bg-zinc-700"
+          >
+            行政管理者向けページへ
+          </Link>
+          <Link
+            href="/pricing"
+            className="block w-full rounded-lg bg-zinc-800 py-2 text-center font-medium text-white hover:bg-zinc-700"
+          >
+            料金ページへ
+          </Link>
+        </div>
       </div>
     </main>
   );

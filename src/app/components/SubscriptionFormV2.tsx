@@ -15,7 +15,25 @@ interface SubscriptionResult {
 }
 
 interface PayjpCardElement {
+  mount: (selector: string) => void;
   update: (options: { disabled: boolean }) => void;
+}
+
+interface PayjpElements {
+  create: (
+    elementType: "card",
+    options: {
+      style: {
+        base: {
+          fontSize: string;
+          color: string;
+          "::placeholder": {
+            color: string;
+          };
+        };
+      };
+    },
+  ) => PayjpCardElement;
 }
 
 interface PayjpInstance {
@@ -28,6 +46,7 @@ interface PayjpInstance {
       param: string;
     };
   }>;
+  elements: () => PayjpElements;
 }
 
 const PLANS = [
@@ -72,19 +91,29 @@ export default function SubscriptionFormV2({
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!scriptLoaded || typeof window === "undefined" || !window.Payjp) return;
+    if (
+      !scriptLoaded ||
+      typeof window === "undefined" ||
+      !window.Payjp ||
+      payjpReady
+    ) {
+      return;
+    }
 
     try {
       const publicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY!;
       console.log("pay.jp初期化中...", publicKey.slice(0, 10) + "...");
 
-      // pay.jp v2の初期化
-      const payjp = window.Payjp(publicKey);
-      payjpRef.current = payjp;
+      const globalWindow = window as Window & {
+        __payjpInstance?: PayjpInstance;
+      };
 
+      const payjp = globalWindow.__payjpInstance ?? window.Payjp(publicKey);
+      globalWindow.__payjpInstance = payjp;
+
+      payjpRef.current = payjp;
       const elements = payjp.elements();
 
-      // 統合カード要素を使用（推奨）
       const cardElement = elements.create("card", {
         style: {
           base: {
@@ -106,7 +135,7 @@ export default function SubscriptionFormV2({
       console.error("pay.jp初期化エラー:", err);
       setError("pay.jpの初期化に失敗しました");
     }
-  }, [scriptLoaded]);
+  }, [scriptLoaded, payjpReady]);
 
   // 登録成功後にカード入力を無効化
   useEffect(() => {
@@ -338,7 +367,7 @@ export default function SubscriptionFormV2({
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Payjp: any;
+    Payjp?: (publicKey: string) => PayjpInstance;
+    __payjpInstance?: PayjpInstance;
   }
 }
