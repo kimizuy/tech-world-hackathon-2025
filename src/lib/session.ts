@@ -6,6 +6,10 @@ export type SessionUser = {
   email: string;
 };
 
+export type SessionData = {
+  user?: SessionUser;
+};
+
 declare module "iron-session" {
   interface IronSessionData {
     user?: SessionUser;
@@ -34,5 +38,5 @@ export async function getSession() {
   }
 
   const cookieStore = await cookies();
-  return getIronSession(cookieStore, sessionOptions);
+  return getIronSession<SessionData>(cookieStore, sessionOptions);
 }
