@@ -77,9 +77,7 @@ const PLANS = [
   },
 ];
 
-export default function SubscriptionFormV2({
-  scriptLoaded,
-}: SubscriptionFormProps) {
+export function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SubscriptionResult | null>(null);
   const [error, setError] = useState<string>("");

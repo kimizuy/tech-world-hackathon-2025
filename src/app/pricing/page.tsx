@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import SubscriptionFormV2 from "@/app/components/SubscriptionFormV2";
+import { SubscriptionForm } from "@/app/components/subscription-form";
 
 const PAYJP_SCRIPT_SRC = "https://js.pay.jp/v2/pay.js";
 
@@ -47,7 +47,7 @@ export default function PricingPage() {
         <h1 className="text-3xl font-bold text-center mb-10 text-gray-800">
           プランを選択してご登録ください
         </h1>
-        <SubscriptionFormV2 scriptLoaded={payjpLoaded} />
+        <SubscriptionForm scriptLoaded={payjpLoaded} />
       </div>
     </main>
   );

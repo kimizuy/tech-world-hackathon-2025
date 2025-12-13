@@ -19,7 +19,7 @@ TypeScript is strict, so annotate props, server actions, and DB helpers explicit
 
 ### File Naming
 
-Use snake_case for all file names (e.g., `subscription_form.tsx`, `create_token.ts`). Exceptions are Next.js conventions like `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, and `route.ts`.
+Use kebab-case for all file names (e.g., `subscription-form.tsx`, `create-token.ts`). Exceptions are Next.js conventions like `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, and `route.ts`.
 
 ### Export Style
 
