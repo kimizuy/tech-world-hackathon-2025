@@ -49,6 +49,7 @@ export default function GovGuidePage() {
   );
   const [recommendedDepartment, setRecommendedDepartment] =
     useState<Department | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [speechSupported, setSpeechSupported] = useState(true);
 
@@ -199,6 +200,7 @@ export default function GovGuidePage() {
 
       if (data.recommendedDepartment) {
         setRecommendedDepartment(data.recommendedDepartment);
+        setShowDialog(true);
       }
 
       // Speak the response
@@ -230,6 +232,7 @@ export default function GovGuidePage() {
 
   const resetConversation = () => {
     setRecommendedDepartment(null);
+    setShowDialog(false);
     setError(null);
     window.speechSynthesis?.cancel();
     const greeting =
@@ -258,26 +261,46 @@ export default function GovGuidePage() {
           </div>
         )}
 
-        {/* Recommended department card */}
-        {recommendedDepartment && (
-          <div className="mb-4 p-4 bg-emerald-900/50 border border-emerald-500 rounded-lg">
-            <h2 className="font-bold text-emerald-300 mb-2">ご案内先</h2>
-            <div className="space-y-2">
-              <p className="text-xl font-bold">{recommendedDepartment.name}</p>
-              <p className="text-slate-300">
-                {recommendedDepartment.floor} {recommendedDepartment.counter}
+        {/* Department confirmation dialog */}
+        {showDialog && recommendedDepartment && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="mx-4 w-full max-w-md rounded-2xl bg-slate-800 p-6 shadow-2xl">
+              <h2 className="mb-4 text-center text-lg font-bold text-emerald-400">
+                ご案内先が見つかりました
+              </h2>
+              <div className="mb-6 rounded-lg bg-slate-700 p-4">
+                <p className="text-2xl font-bold text-white">
+                  {recommendedDepartment.name}
+                </p>
+                <p className="mt-2 text-slate-300">
+                  {recommendedDepartment.floor} {recommendedDepartment.counter}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">
+                  {recommendedDepartment.description}
+                </p>
+              </div>
+              <p className="mb-6 text-center text-slate-300">
+                この窓口へ進みますか？
               </p>
-              <p className="text-sm text-slate-400">
-                {recommendedDepartment.description}
-              </p>
-              <button
-                onClick={() =>
-                  router.push(`/gov/department/${recommendedDepartment.id}`)
-                }
-                className="mt-3 w-full rounded-lg bg-emerald-600 px-4 py-3 font-bold text-white hover:bg-emerald-500 transition-colors"
-              >
-                {recommendedDepartment.name}の窓口へ進む →
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDialog(false);
+                    setRecommendedDepartment(null);
+                  }}
+                  className="flex-1 rounded-lg border border-slate-500 px-4 py-3 font-bold text-slate-300 transition-colors hover:bg-slate-700"
+                >
+                  いいえ
+                </button>
+                <button
+                  onClick={() =>
+                    router.push(`/gov/department/${recommendedDepartment.id}`)
+                  }
+                  className="flex-1 rounded-lg bg-emerald-600 px-4 py-3 font-bold text-white transition-colors hover:bg-emerald-500"
+                >
+                  はい
+                </button>
+              </div>
             </div>
           </div>
         )}
