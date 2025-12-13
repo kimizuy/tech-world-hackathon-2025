@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-export default function UserGuidePage() {
+export default function UserMactingPage() {
   return (
     <main className="min-h-screen bg-zinc-900 text-white p-8">
       <section className="mx-auto max-w-2xl space-y-4">
-        <h1 className="text-3xl font-bold">ユーザー向け案内</h1>
+        <h1 className="text-3xl font-bold">ユーザー向けMacting</h1>
         <p className="text-zinc-300">
-          このページではイベント参加方法や推奨デバイス、配信ルームへのアクセス手順などを順番に紹介します。
+          配信の使い方やサポート窓口、レコメンドされるルームの選び方などをまとめた案内ページです。
         </p>
         <Link
           href="/user"
