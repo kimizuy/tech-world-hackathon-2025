@@ -1,51 +1,61 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createSubscription, createToken } from '@/app/actions/subscription'
+import { useState } from "react";
+import { createToken } from "@/app/actions/subscription";
 
 interface SubscriptionFormProps {
-  scriptLoaded: boolean
+  scriptLoaded?: boolean;
 }
 
-export default function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps) {
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<any>(null)
-  const [error, setError] = useState<string>('')
+interface DisplayResult {
+  tokenId?: string;
+  customerId?: string;
+  subscriptionId?: string;
+  status?: string;
+  message?: string;
+}
+
+export default function SubscriptionForm({
+  scriptLoaded: _scriptLoaded,
+}: SubscriptionFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<DisplayResult | null>(null);
+  const [error, setError] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    setResult(null)
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setResult(null);
 
-    const formData = new FormData(e.currentTarget)
-    const expYear = formData.get('expYear') as string
+    const formData = new FormData(e.currentTarget);
+    const expYear = formData.get("expYear") as string;
     const cardData = {
-      number: formData.get('cardNumber') as string,
-      exp_month: formData.get('expMonth') as string,
+      number: formData.get("cardNumber") as string,
+      exp_month: formData.get("expMonth") as string,
       exp_year: expYear.length === 2 ? `20${expYear}` : expYear, // 2桁の場合は4桁に変換
-      cvc: formData.get('cvc') as string,
-    }
-    const email = formData.get('email') as string
+      cvc: formData.get("cvc") as string,
+    };
+    const email = formData.get("email") as string;
 
     try {
-      console.log('サーバーサイドでトークン作成中...')
+      console.log("サーバーサイドでトークン作成中...");
 
       // サーバーサイドでトークン作成
-      const tokenResult = await createToken(cardData)
+      const tokenResult = await createToken(cardData);
 
       if (!tokenResult.success) {
-        throw new Error(tokenResult.error || 'トークン作成に失敗しました')
+        throw new Error(tokenResult.error || "トークン作成に失敗しました");
       }
 
-      console.log('✅ トークン作成成功:', tokenResult.token)
+      console.log("✅ トークン作成成功:", tokenResult.token);
 
       // 成功メッセージを表示
       setResult({
         tokenId: tokenResult.token,
-        message: 'トークン作成に成功しました！',
-      })
-      console.log('✅ トークン作成テスト成功！')
+        message: "トークン作成に成功しました！",
+      });
+      console.log("✅ トークン作成テスト成功！");
 
       // NOTE: サブスクリプション作成を実行する場合は、
       // pay.jpの管理画面でプランを作成してから以下のコメントを外してください
@@ -63,13 +73,13 @@ export default function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps
         setError(result.error)
       }
       */
-    } catch (err: any) {
-      console.error('エラー:', err)
-      setError(err.message || 'エラーが発生しました')
+    } catch (err) {
+      console.error("エラー:", err);
+      setError(err instanceof Error ? err.message : "エラーが発生しました");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -85,7 +95,7 @@ export default function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps
 
       {result && (
         <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          <p className="font-bold">✅ {result.message || '登録成功！'}</p>
+          <p className="font-bold">✅ {result.message || "登録成功！"}</p>
           {result.tokenId && (
             <p className="text-sm mt-2">トークンID: {result.tokenId}</p>
           )}
@@ -182,7 +192,7 @@ export default function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps
           disabled={loading}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors"
         >
-          {loading ? '処理中...' : 'トークン作成テスト'}
+          {loading ? "処理中..." : "トークン作成テスト"}
         </button>
       </form>
 
@@ -193,11 +203,5 @@ export default function SubscriptionForm({ scriptLoaded }: SubscriptionFormProps
         <p>CVC: 123</p>
       </div>
     </div>
-  )
-}
-
-declare global {
-  interface Window {
-    Payjp: any
-  }
+  );
 }
