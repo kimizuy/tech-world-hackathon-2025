@@ -18,15 +18,14 @@
     "drizzle-orm": "^0.45.1",
     "livekit-client": "^2.16.1",
     "livekit-server-sdk": "^2.15.0",
+    "mysql2": "^3.15.3",
     "next": "16.0.10",
-    "pg": "^8.16.3",
     "react": "19.2.1",
     "react-dom": "19.2.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.8",
