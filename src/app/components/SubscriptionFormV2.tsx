@@ -7,11 +7,37 @@ interface SubscriptionFormProps {
   scriptLoaded: boolean
 }
 
+const PLANS = [
+  {
+    id: 'starter_plan',
+    name: 'スタータープラン',
+    price: 500,
+    description: '個人利用に最適',
+    features: ['基本機能', 'ほげほげ1', 'fugafuga1'],
+  },
+  {
+    id: 'basic_plan',
+    name: 'ベーシックプラン',
+    price: 1000,
+    description: '小規模チーム向け',
+    features: ['全機能利用可能', 'ほげほげ2', 'fugafuga2'],
+    recommended: true,
+  },
+  {
+    id: 'pro_plan',
+    name: 'プロプラン',
+    price: 2980,
+    description: '大規模ビジネス向け',
+    features: ['無制限利用', 'ほげほげ3', 'fugafuga3'],
+  },
+]
+
 export default function SubscriptionFormV2({ scriptLoaded }: SubscriptionFormProps) {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string>('')
   const [payjpReady, setPayjpReady] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState('basic_plan')
   const cardElementRef = useRef<any>(null)
   const payjpRef = useRef<any>(null)
   const emailRef = useRef<HTMLInputElement>(null)
@@ -89,7 +115,7 @@ export default function SubscriptionFormV2({ scriptLoaded }: SubscriptionFormPro
       const result = await createSubscription(
         tokenResult.id,
         email,
-        'basic_plan'
+        selectedPlan
       )
 
       if (result.success) {
@@ -106,44 +132,96 @@ export default function SubscriptionFormV2({ scriptLoaded }: SubscriptionFormPro
     }
   }
 
+  const selectedPlanInfo = PLANS.find((p) => p.id === selectedPlan)
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        サブスクリプション登録
-      </h2>
-
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          ❌ {error}
+    <div className="max-w-5xl mx-auto">
+      {/* プラン選択 */}
+      <div className="mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {PLANS.map((plan) => (
+            <div
+              key={plan.id}
+              onClick={() => setSelectedPlan(plan.id)}
+              className={`relative cursor-pointer rounded-lg border-2 p-4 transition-all ${
+                selectedPlan === plan.id
+                  ? 'border-blue-600 bg-blue-50 shadow-lg'
+                  : 'border-gray-300 bg-white hover:border-blue-400 hover:shadow-md'
+              }`}
+            >
+              {plan.recommended && (
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+                  <span className="bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    おすすめ
+                  </span>
+                </div>
+              )}
+              <div className="text-center">
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  {plan.name}
+                </h3>
+                <p className="text-xs text-gray-600 mb-3">{plan.description}</p>
+                <div className="mb-3">
+                  <span className="text-2xl font-bold text-gray-900">
+                    ¥{plan.price.toLocaleString()}
+                  </span>
+                  <span className="text-sm text-gray-600">/月</span>
+                </div>
+                <ul className="text-xs text-gray-700 space-y-1 text-left">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <span className="text-blue-600 mr-1 text-sm">✓</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
-      {result && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          <p className="font-bold">✅ サブスクリプション登録成功！</p>
-          <p className="text-sm mt-2">顧客ID: {result.customerId}</p>
-          <p className="text-sm">サブスクID: {result.subscriptionId}</p>
-          <p className="text-sm">ステータス: {result.status}</p>
-        </div>
-      )}
+      {/* 支払い情報入力 */}
+      <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
+        <h2 className="text-xl font-bold mb-1 text-gray-800">
+          お支払い情報
+        </h2>
+        <p className="text-xs text-gray-600 mb-4">
+          <span className="font-bold text-blue-600">{selectedPlanInfo?.name}</span>
+          （¥{selectedPlanInfo?.price.toLocaleString()}/月・7日間無料）
+        </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            ❌ {error}
+          </div>
+        )}
+
+        {result && (
+          <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            <p className="font-bold">✅ サブスクリプション登録成功！</p>
+            <p className="text-sm mt-2">顧客ID: {result.customerId}</p>
+            <p className="text-sm">サブスクID: {result.subscriptionId}</p>
+            <p className="text-sm">ステータス: {result.status}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             メールアドレス
           </label>
           <input
             ref={emailRef}
             type="email"
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-            placeholder="test@example.com"
-            defaultValue="test@example.com"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            placeholder="your@email.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             カード情報
           </label>
           <div
@@ -156,21 +234,15 @@ export default function SubscriptionFormV2({ scriptLoaded }: SubscriptionFormPro
         <button
           type="submit"
           disabled={loading || !payjpReady}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors"
+          className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors text-sm"
         >
           {!payjpReady
-            ? 'pay.jp読み込み中...'
+            ? '読み込み中...'
             : loading
             ? '処理中...'
-            : '登録する（¥1,000/月 - 7日間無料）'}
+            : `登録する（¥${selectedPlanInfo?.price.toLocaleString()}/月）`}
         </button>
       </form>
-
-      <div className="mt-6 p-4 bg-gray-50 rounded text-sm text-gray-600">
-        <p className="font-semibold mb-2">💡 テストカード情報</p>
-        <p>カード番号: 4242 4242 4242 4242</p>
-        <p>有効期限: 12/30 (任意の未来の日付)</p>
-        <p>CVC: 123 (任意の3桁)</p>
       </div>
     </div>
   )
