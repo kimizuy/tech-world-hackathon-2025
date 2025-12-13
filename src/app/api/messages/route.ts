@@ -17,7 +17,7 @@ export async function GET() {
     console.error("Failed to fetch messages:", error);
     return NextResponse.json(
       { error: "Failed to fetch messages" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     if (!username || !content) {
       return NextResponse.json(
         { error: "Username and content are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     console.error("Failed to create message:", error);
     return NextResponse.json(
       { error: "Failed to create message" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

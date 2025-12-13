@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.{js,jsx,ts,tsx,json,css,md}"
+      run: npx prettier --write {staged_files} && git add {staged_files}
+      stage_fixed: true
+    lint:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: npx eslint --fix {staged_files} && git add {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    build:
+      run: npm run build
