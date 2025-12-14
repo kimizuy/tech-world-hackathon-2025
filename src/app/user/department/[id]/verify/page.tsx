@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { findDepartmentById } from "../../../reception/departments";
 import { joinQueue, getCitizenQueueStatus } from "@/app/actions/queue";
 
@@ -449,6 +449,9 @@ export default function VerifyPage() {
         {step === "queued" && ticketNumber && (
           <section className="space-y-4">
             <div className="p-8 bg-slate-800 rounded-lg text-center">
+              <p className="text-sm text-emerald-300 font-semibold mb-4">
+                1、待機中
+              </p>
               <p className="text-slate-400 text-sm mb-2">あなたの番号札</p>
               <div className="w-32 h-32 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-5xl font-bold text-white">
