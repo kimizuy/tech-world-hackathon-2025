@@ -42,9 +42,9 @@ export default function PricingPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-10 px-4">
+    <main className="min-h-screen bg-zinc-900 py-10 px-4">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-10 text-gray-800">
+        <h1 className="text-3xl font-bold text-center mb-10 text-white">
           プランを選択してご登録ください
         </h1>
         <SubscriptionForm scriptLoaded={payjpLoaded} />
