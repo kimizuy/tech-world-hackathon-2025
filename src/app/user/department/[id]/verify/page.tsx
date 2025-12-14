@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { findDepartmentById } from "../../../reception/departments";
-import { joinQueue } from "@/app/actions/queue";
+import { joinQueue, getCitizenQueueStatus } from "@/app/actions/queue";
 
 type VerificationStep =
   | "card"
@@ -226,6 +226,28 @@ export default function VerifyPage() {
       if (facePreview) URL.revokeObjectURL(facePreview);
     };
   }, []);
+
+  // Poll queue status when in queued state
+  useEffect(() => {
+    if (step !== "queued") return;
+
+    const checkStatus = async () => {
+      const status = await getCitizenQueueStatus();
+      if (status && status.status === "in_progress" && status.roomId) {
+        router.push(
+          `/rooms/${status.roomId}?username=${encodeURIComponent(status.citizenName ?? "市民")}`,
+        );
+      }
+    };
+
+    // Check immediately
+    checkStatus();
+
+    // Then poll every 3 seconds
+    const interval = setInterval(checkStatus, 3000);
+
+    return () => clearInterval(interval);
+  }, [step, router]);
 
   if (!department) {
     return (

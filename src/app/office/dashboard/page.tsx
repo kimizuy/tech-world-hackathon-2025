@@ -20,6 +20,7 @@ export default function StaffDashboardPage() {
   } | null>(null);
   const [waitingList, setWaitingList] = useState<QueueEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isStarting, setIsStarting] = useState<number | null>(null);
 
   const department = user?.departmentId
@@ -45,7 +46,13 @@ export default function StaffDashboardPage() {
     }
 
     setIsLoading(false);
+    setIsRefreshing(false);
   }, [router]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await loadData();
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -76,7 +83,9 @@ export default function StaffDashboardPage() {
     const result = await startConsultation(queueId);
 
     if (result.success && result.roomId) {
-      router.push(`/rooms/${result.roomId}`);
+      router.push(
+        `/rooms/${result.roomId}?username=${encodeURIComponent(user?.name ?? "職員")}`,
+      );
     } else {
       alert(result.error ?? "相談の開始に失敗しました");
       setIsStarting(null);
@@ -116,10 +125,11 @@ export default function StaffDashboardPage() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => loadData()}
-              className="px-4 py-2 rounded-lg border border-slate-600 hover:border-slate-400 text-sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="px-4 py-2 rounded-lg border border-slate-600 hover:border-slate-400 disabled:border-slate-700 disabled:text-slate-500 text-sm"
             >
-              更新
+              {isRefreshing ? "更新中..." : "更新"}
             </button>
             <form action={logoutUser}>
               <button
