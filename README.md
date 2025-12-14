@@ -1,6 +1,6 @@
-# Tech World Hackathon 2025
+# Madoguchi
 
-Next.js 16 + LiveKit + Drizzle ORM + TiDB を使用したプロジェクト。
+Next.js 16 + LiveKit + Drizzle ORM + TiDB を使用したオンライン窓口システム。
 
 ## Tech Stack
 

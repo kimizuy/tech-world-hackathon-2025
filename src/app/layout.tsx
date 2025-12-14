@@ -14,9 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TECH WORLD Hackathon 2025",
-  description:
-    "TECH WORLD Hackathon 2025 - Video call application with LiveKit and Next.js",
+  title: "Madoguchi",
+  description: "Madoguchi - 行政手続きのためのオンライン窓口システム",
 };
 
 export default function RootLayout({
