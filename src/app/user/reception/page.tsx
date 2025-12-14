@@ -40,6 +40,7 @@ declare global {
 export default function ReceptionPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isStarted, setIsStarted] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,19 +113,6 @@ export default function ReceptionPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Initial greeting
-  useEffect(() => {
-    const greeting =
-      "こんにちは、市役所総合案内です。本日はどのようなご用件でいらっしゃいますか？";
-    const initialMessages: Message[] = [
-      { role: "assistant", content: greeting },
-    ];
-    messagesRef.current = initialMessages;
-    setMessages(initialMessages);
-    speak(greeting);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Process pending transcript (fixes stale closure issue)
   useEffect(() => {
     if (pendingTranscript && !isLoading) {
@@ -160,6 +148,18 @@ export default function ReceptionPage() {
 
     window.speechSynthesis.speak(utterance);
   }, []);
+
+  const handleStart = useCallback(() => {
+    setIsStarted(true);
+    const greeting =
+      "こんにちは、市役所総合案内です。本日はどのようなご用件でいらっしゃいますか？";
+    const initialMessages: Message[] = [
+      { role: "assistant", content: greeting },
+    ];
+    messagesRef.current = initialMessages;
+    setMessages(initialMessages);
+    speak(greeting);
+  }, [speak]);
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -246,6 +246,30 @@ export default function ReceptionPage() {
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       <div className="mx-auto max-w-2xl p-4">
+        {/* Welcome overlay */}
+        {!isStarted && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="mx-4 w-full max-w-md rounded-2xl bg-slate-800 p-6 shadow-2xl">
+              <h2 className="mb-4 text-center text-lg font-bold text-emerald-400">
+                市役所 総合案内
+              </h2>
+              <div className="mb-6 rounded-lg bg-slate-700 p-4">
+                <p className="text-slate-300 text-center">
+                  音声でご用件をお伝えいただくと、
+                  <br />
+                  適切な窓口をご案内します。
+                </p>
+              </div>
+              <button
+                onClick={handleStart}
+                className="w-full rounded-lg bg-emerald-600 px-4 py-4 text-center text-lg font-bold hover:bg-emerald-500 transition-colors"
+              >
+                案内を開始する
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <header className="mb-6">
           <h1 className="text-2xl font-bold mb-2">市役所 総合案内</h1>
