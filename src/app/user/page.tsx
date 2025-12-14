@@ -50,17 +50,19 @@ export default async function UserPage() {
           </div>
         )}
 
-        <div className="space-y-3">
-          <Link
-            href={isLoggedIn ? "/user/reception" : "/user/login"}
-            className="block w-full rounded-lg bg-emerald-600 px-4 py-4 text-center text-lg font-bold hover:bg-emerald-500"
-          >
-            AI総合案内を開始
-          </Link>
-          <p className="text-center text-sm text-zinc-400">
-            音声でご用件をお伝えください。適切な窓口をご案内します。
-          </p>
-        </div>
+        {isLoggedIn && (
+          <div className="space-y-3">
+            <Link
+              href="/user/reception"
+              className="block w-full rounded-lg bg-emerald-600 px-4 py-4 text-center text-lg font-bold hover:bg-emerald-500"
+            >
+              AI総合案内を開始
+            </Link>
+            <p className="text-center text-sm text-zinc-400">
+              音声でご用件をお伝えください。適切な窓口をご案内します。
+            </p>
+          </div>
+        )}
 
         <div className="pt-4">
           <Link
