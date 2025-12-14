@@ -107,6 +107,11 @@ export default function ReceptionPage() {
     };
 
     recognitionRef.current = recognition;
+
+    // Cleanup: stop speech synthesis on unmount
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
   }, []);
 
   // Auto scroll to bottom
