@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Department } from "./departments";
 
 interface Message {
@@ -247,7 +248,7 @@ export default function ReceptionPage() {
     <main className="min-h-screen bg-slate-900 text-white">
       <div className="mx-auto max-w-2xl p-4">
         {/* Header */}
-        <header className="mb-6">
+        <header className="mb-6 text-center">
           <h1 className="text-2xl font-bold mb-2">市役所 総合案内</h1>
           <p className="text-slate-400 text-sm">
             音声でご用件をお伝えください。適切な窓口をご案内します。
@@ -306,38 +307,54 @@ export default function ReceptionPage() {
         )}
 
         {/* Chat messages */}
-        <div className="mb-4 h-[400px] overflow-y-auto rounded-lg bg-slate-800 p-4">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`mb-3 ${msg.role === "user" ? "text-right" : "text-left"}`}
-            >
+        <div className="mb-4 flex gap-4">
+          <div className="flex flex-col items-center text-center text-slate-300">
+            <div className="rounded-full bg-slate-800 p-3">
+              <Image
+                src="/business_man1_1_smile.png"
+                alt="案内担当のアイコン"
+                width={56}
+                height={56}
+                className="h-12 w-12 object-cover"
+              />
+            </div>
+            <p className="mt-2 text-xs">案内AI</p>
+          </div>
+          <div className="flex-1 h-[400px] overflow-y-auto rounded-lg bg-slate-800 p-4">
+            {messages.map((msg, idx) => (
               <div
-                className={`inline-block max-w-[80%] rounded-lg px-4 py-2 ${
-                  msg.role === "user"
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-700 text-slate-100"
+                key={idx}
+                className={`mb-3 ${
+                  msg.role === "user" ? "text-right" : "text-left"
                 }`}
               >
-                {msg.content}
+                <div
+                  className={`inline-block max-w-[80%] rounded-lg px-4 py-2 ${
+                    msg.role === "user"
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-700 text-slate-100"
+                  }`}
+                >
+                  {msg.content}
+                </div>
               </div>
-            </div>
-          ))}
-          {transcript && (
-            <div className="mb-3 text-right">
-              <div className="inline-block max-w-[80%] rounded-lg px-4 py-2 bg-blue-600/50 text-white italic">
-                {transcript}...
+            ))}
+            {transcript && (
+              <div className="mb-3 text-right">
+                <div className="inline-block max-w-[80%] rounded-lg px-4 py-2 bg-blue-600/50 text-white italic">
+                  {transcript}...
+                </div>
               </div>
-            </div>
-          )}
-          {isLoading && (
-            <div className="mb-3 text-left">
-              <div className="inline-block rounded-lg px-4 py-2 bg-slate-700">
-                <span className="animate-pulse">考え中...</span>
+            )}
+            {isLoading && (
+              <div className="mb-3 text-left">
+                <div className="inline-block rounded-lg px-4 py-2 bg-slate-700">
+                  <span className="animate-pulse">考え中...</span>
+                </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+            )}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
 
         {/* Voice controls */}
